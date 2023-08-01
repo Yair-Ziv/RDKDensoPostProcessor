@@ -57,7 +57,7 @@ We welcome contributions to this repository! If you find any issues, have sugges
 
 If you have any questions or need further assistance, feel free to contact us at:
 
-- Email: your-email@example.com
-- GitHub: [YourUsername](https://github.com/your-username)
+- Email: yair.ziv@1mrobotics.com
+- GitHub: [YourUsername](https://github.com/Yair-Ziv)
 
 Happy Robot Programming with Y.A.I.R - Your Automated Industrial Robot!

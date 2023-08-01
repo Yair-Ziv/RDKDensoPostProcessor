@@ -8,7 +8,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from dataclasses import dataclass
 
 # ----------------------------------------------------
 # This file is a sample POST PROCESSOR script to generate programs
@@ -44,20 +43,31 @@ from dataclasses import dataclass
 # Import RoboDK tools
 from robodk import *
 # Import other libraries
+from dataclasses import dataclass
+from enum import Enum
 import numpy as np
 import json
 
 
 # ----------------------------------------------------
+
+class MoveInterpolation(Enum):
+    LINEAR = 'Linear'
+    POINT_TO_POINT = 'PointToPoint'
+    JOINT = 'Joint'
+    NONE = ''
+
+
 @dataclass
 class RobotMotion:
     frame: str
     tool: str
     pose: np.array
-    move_interpolation: str = ''
+    joints: list
+    move_interpolation:  MoveInterpolation= MoveInterpolation.NONE
 
     def to_dict(self):
-        return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.tolist()}
+        return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.tolist(), 'Joints': self.joints}
 
 
 class SystemStateHolder:
@@ -193,6 +203,10 @@ class RobotPost(object):
         """
         UploadFTP(self.PROG_FILES, robot_ip, remote_path, ftp_user, ftp_pass)
 
+    def MoveBase(self, pose, joints, interpolation: MoveInterpolation):
+        self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
+                                      np.array(list(pose)), joints))
+
     def MoveJ(self, pose, joints=None, conf_RLF=None):
         """Defines a joint movement.
 
@@ -206,8 +220,7 @@ class RobotPost(object):
         :param conf_RLF: robot configuration as a list of 3 ints: [REAR, LOWER-ARM, FLIP]. [0,0,0] means [front, upper arm and non-flip] configuration
         :type conf_RLF: int list
         """
-        self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
-                                      np.array(list(pose))))
+        self.MoveBase(pose, joints, MoveInterpolation.JOINT)
 
     def MoveL(self, pose, joints=None, conf_RLF=None):
         """Defines a linear movement.
@@ -223,7 +236,7 @@ class RobotPost(object):
         :type conf_RLF: int list
         """
 
-        self.MoveJ(pose)
+        self.MoveBase(pose, joints, MoveInterpolation.LINEAR)
 
     def MoveC(self, pose1, joints1, pose2, joints2, conf_RLF_1=None, conf_RLF_2=None):
         """Defines a circular movement.

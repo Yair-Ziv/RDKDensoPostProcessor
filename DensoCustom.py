@@ -45,7 +45,7 @@ from robodk import *
 
 # Import other libraries
 from DensoCustomUtils.Utils import *
-import json
+import yaml
 import numpy as np
 
 
@@ -100,9 +100,6 @@ class RobotPost(object):
         return motions
 
     def parse_output(self):
-        json.dumps(self.system_state_holder.frames)
-        json.dumps(self.system_state_holder.tools)
-        json.dumps(self.parse_motions())
         return {'Frames': self.system_state_holder.frames,
                 'Tools': self.system_state_holder.tools,
                 'Poses': self.parse_motions()}
@@ -130,7 +127,7 @@ class RobotPost(object):
         settings in RoboDK are set to not show the program once it has been saved. Otherwise, a string is provided
         with the path of the preferred text editor :type show_result: bool, str
         """
-        progname = progname + '.json'
+        progname = progname + '.yaml'
         if ask_user or not DirExists(folder):
             filesave = getSaveFile(folder, progname, 'Save program as...')
             if filesave is not None:
@@ -143,7 +140,7 @@ class RobotPost(object):
         # Japanese controllers need the shift_jis codec and replace errors to not throw errors on non-supported
         # characters with open(filesave, "w", encoding="shift_jis", errors="replace") as fid:
         with open(filesave, "w", encoding="utf-8") as fid:
-            fid.write(json.dumps(self.parse_output(), indent=2))
+            fid.write(yaml.dump(self.parse_output(), indent=2))
 
         print('SAVED: %s\n' % filesave)
 

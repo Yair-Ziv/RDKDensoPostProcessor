@@ -24,11 +24,11 @@ To use the post processor, follow these steps:
 git clone https://github.com/your-username/robodk-post-processor.git
 ```
 
-2. Open RoboDK and go to `File > Load Application`.
+2. Paste the .py files to the RoboDK posts directory:
+  * Unix: ~/RoboDK/Posts/
+  * Windows: C:/RoboDK/Posts
 
-3. Select the `robodk-post-processor.py` file from the cloned repository.
-
-4. The post processor will now be loaded into RoboDK.
+3. The Post Processor will now be loaded into RoboDK, choose DensoCustom
 
 ## Usage
 
@@ -58,6 +58,6 @@ We welcome contributions to this repository! If you find any issues, have sugges
 If you have any questions or need further assistance, feel free to contact us at:
 
 - Email: yair.ziv@1mrobotics.com
-- GitHub: [YourUsername](https://github.com/Yair-Ziv)
+- GitHub: [Yair-Ziv](https://github.com/Yair-Ziv)
 
 Happy Robot Programming with Y.A.I.R - Your Automated Industrial Robot!

@@ -42,52 +42,11 @@
 # ----------------------------------------------------
 # Import RoboDK tools
 from robodk import *
+
 # Import other libraries
-from dataclasses import dataclass
-from enum import Enum
-import numpy as np
+from DensoCustomUtils import *
 import json
-
-
-# ----------------------------------------------------
-
-class MoveInterpolation(Enum):
-    LINEAR = 'Linear'
-    POINT_TO_POINT = 'PointToPoint'
-    JOINT = 'Joint'
-    NONE = ''
-
-
-@dataclass
-class RobotMotion:
-    frame: str
-    tool: str
-    pose: np.array
-    joints: list
-    move_interpolation:  MoveInterpolation= MoveInterpolation.NONE
-
-    def to_dict(self):
-        return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.tolist(), 'Joints': self.joints}
-
-
-class SystemStateHolder:
-    def __init__(self):
-        self.frames = dict()
-        self.tools = dict()
-        self.active_frame = ''
-        self.active_tool = ''
-
-    def set_frame(self, frame_name: str, pose: np.array):
-        if frame_name is None:
-            raise Exception("Invalid empty frame name received")
-        self.frames[frame_name] = list(pose)
-        self.active_frame = frame_name
-
-    def set_tool(self, tool_name: str, pose: np.array):
-        if tool_name is None:
-            raise Exception("Invalid empty tool name received")
-        self.tools[tool_name] = list(pose)
-        self.active_tool = tool_name
+import numpy as np
 
 
 # ----------------------------------------------------
@@ -105,7 +64,7 @@ class RobotPost(object):
     LOG = ''
     nAxes = 6
 
-    def __init__(self, robotpost=None, robotname=None, robot_axes=6, **kwargs):
+    def __init__(self, robotpost=None, robotname=None, robot_axes=6):
         """Create a new post processor.
 
         :param robotpost: name of the post processor
@@ -204,8 +163,9 @@ class RobotPost(object):
         UploadFTP(self.PROG_FILES, robot_ip, remote_path, ftp_user, ftp_pass)
 
     def MoveBase(self, pose, joints, interpolation: MoveInterpolation):
+        fig = get_fig(joints)
         self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
-                                      np.array(list(pose)), joints))
+                                      Pose(np.array(list(pose)), fig), joints))
 
     def MoveJ(self, pose, joints=None, conf_RLF=None):
         """Defines a joint movement.
@@ -450,20 +410,21 @@ def test_post():
     from robodk import PosePP as p
 
     r = RobotPost()
+    joints = np.deg2rad([-150, -60, 65, 180, 45, 0])
 
-    r.MoveJ(p(200, 200, 500, 180, 0, 180))
-    r.MoveL(p(200, 250, 348.734575, 180, 0, -150))
-    r.MoveL(p(200, 200, 262.132034, 180, 0, -150))
+    r.MoveJ(p(200, 200, 500, 180, 0, 180), joints)
+    r.MoveL(p(200, 250, 348.734575, 180, 0, -150), joints)
+    r.MoveL(p(200, 200, 262.132034, 180, 0, -150), joints)
     r.setFrame(p(807.766544, -963.699898, 41.478944, 0, 0, 0), frame_name='BRB')
     r.setTool(p(62.5, -108.253175, 100, -60, 90, 0), tool_name='Medium')
-    r.MoveL(p(200, 250, 348.734575, 180, 0, -150))
-    r.MoveL(p(250, 300, 278.023897, 180, 0, -150))
-    r.MoveL(p(250, 250, 191.421356, 180, 0, -150))
+    r.MoveL(p(200, 250, 348.734575, 180, 0, -150), joints)
+    r.MoveL(p(250, 300, 278.023897, 180, 0, -150), joints)
+    r.MoveL(p(250, 250, 191.421356, 180, 0, -150), joints)
     r.setFrame(p(809.766544, -963.699898, 41.478944, 0, 0, 0), frame_name='Boxer')
-    r.MoveL(p(250, 300, 278.023897, 180, 0, -150))
-    r.MoveL(p(250, 200, 278.023897, 180, 0, -150))
-    r.MoveL(p(250, 150, 191.421356, 180, 0, -150))
-    r.MoveJ(p(250, 150, 191.421356, 180, 0, -150))
+    r.MoveL(p(250, 300, 278.023897, 180, 0, -150), joints)
+    r.MoveL(p(250, 200, 278.023897, 180, 0, -150), joints)
+    r.MoveL(p(250, 150, 191.421356, 180, 0, -150), joints)
+    r.MoveJ(p(250, 150, 191.421356, 180, 0, -150), joints)
     r.ProgFinish("Program")
     r.ProgSave(".","Program")
 

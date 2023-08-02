@@ -16,13 +16,14 @@ class Pose:
     def to_dict(self):
         return {'Pose': self.pose.tolist(), 'Fig': self.fig}
 
-@dataclass
+
 class RobotMotion:
-    frame: str
-    tool: str
-    pose: Pose
-    joints: list
-    move_interpolation:  MoveInterpolation= MoveInterpolation.NONE
+    def __init__(self, frame, tool, pose, joints, move_interpolation=MoveInterpolation.NONE):
+        self.frame = frame
+        self.tool = tool
+        self.pose = pose
+        self.joints = joints
+        self.move_interpolation = move_interpolation
 
     def to_dict(self):
         return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.to_dict()}
@@ -49,10 +50,10 @@ class SystemStateHolder:
 
 
 _DENSO_MHD = mhd = np.array([
-    [0.0000000,-1.5707963,0.0000000,-1.5707963,1.5707963,-1.5707963],
-[0.0000000,180.0000000,520.0000000,100.0000000,0.0000000,0.0000000],
-[0.0000000,-1.5707963,-1.5707963,0.0000000,0.0000000,3.1415927],
-[475.0000000,0.0000000,0.0000000,590.0000000,0.0000000,90.0000000]
+    [0.0000000, -1.5707963, 0.0000000, -1.5707963, 1.5707963, -1.5707963],
+    [0.0000000, 180.0000000, 520.0000000, 100.0000000, 0.0000000, 0.0000000],
+    [0.0000000, -1.5707963, -1.5707963, 0.0000000, 0.0000000, 3.1415927],
+    [475.0000000, 0.0000000, 0.0000000, 590.0000000, 0.0000000, 90.0000000]
 ]).T
 _fig_calculator = FigCalculator.from_parameters(_DENSO_MHD)
 

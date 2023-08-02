@@ -1,7 +1,4 @@
-from enum import Enum
-from dataclasses import dataclass
-import numpy as np
-from DensoFigCalc import FigCalculator
+from .FigCalc import *
 
 
 class MoveInterpolation(Enum):

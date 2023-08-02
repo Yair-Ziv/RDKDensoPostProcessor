@@ -44,7 +44,7 @@
 from robodk import *
 
 # Import other libraries
-from DensoCustomUtils import *
+from DensoCustomUtils.Utils import *
 import json
 import numpy as np
 

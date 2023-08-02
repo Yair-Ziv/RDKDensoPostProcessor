@@ -167,7 +167,7 @@ class RobotPost(object):
         self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
                                       Pose(np.array(list(pose)), fig), joints, interpolation))
 
-    def MoveJ(self, pose, joints=None, conf_RLF=None):
+    def MoveJ(self, pose, joints=None, conf_RLF=None, **kwargs):
         """Defines a joint movement.
 
         **Tip**:
@@ -180,6 +180,7 @@ class RobotPost(object):
         :param conf_RLF: robot configuration as a list of 3 ints: [REAR, LOWER-ARM, FLIP]. [0,0,0] means [front, upper arm and non-flip] configuration
         :type conf_RLF: int list
         """
+        self.LOG += str(kwargs)
         self.MoveBase(pose, joints, MoveInterpolation.JOINT)
 
     def MoveL(self, pose, joints=None, conf_RLF=None):

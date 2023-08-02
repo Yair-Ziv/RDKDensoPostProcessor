@@ -18,15 +18,16 @@ class Pose:
 
 
 class RobotMotion:
-    def __init__(self, frame, tool, pose, joints, move_interpolation=MoveInterpolation.NONE):
+    def __init__(self, frame, tool, pose, joints, move_interpolation=MoveInterpolation.NONE, **kwargs):
         self.frame = frame
         self.tool = tool
         self.pose = pose
         self.joints = joints
         self.move_interpolation = move_interpolation
+        self.meta = kwargs
 
     def to_dict(self):
-        return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.to_dict()}
+        return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.to_dict(), 'Meta': self.meta}
 
 
 class SystemStateHolder:

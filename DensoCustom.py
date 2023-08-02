@@ -162,10 +162,10 @@ class RobotPost(object):
         """
         UploadFTP(self.PROG_FILES, robot_ip, remote_path, ftp_user, ftp_pass)
 
-    def MoveBase(self, pose, joints, interpolation: MoveInterpolation):
+    def MoveBase(self, pose, joints, interpolation: MoveInterpolation, **kwargs):
         fig = get_fig(joints)
         self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
-                                      Pose(np.array(list(pose)), fig), joints, interpolation))
+                                      Pose(np.array(list(pose)), fig), joints, interpolation, **kwargs))
 
     def MoveJ(self, pose, joints=None, conf_RLF=None, **kwargs):
         """Defines a joint movement.
@@ -180,10 +180,9 @@ class RobotPost(object):
         :param conf_RLF: robot configuration as a list of 3 ints: [REAR, LOWER-ARM, FLIP]. [0,0,0] means [front, upper arm and non-flip] configuration
         :type conf_RLF: int list
         """
-        self.LOG += str(kwargs)
-        self.MoveBase(pose, joints, MoveInterpolation.JOINT)
+        self.MoveBase(pose, joints, MoveInterpolation.JOINT, **kwargs)
 
-    def MoveL(self, pose, joints=None, conf_RLF=None):
+    def MoveL(self, pose, joints=None, conf_RLF=None, **kwargs):
         """Defines a linear movement.
 
         **Tip**:
@@ -196,7 +195,7 @@ class RobotPost(object):
         :param conf_RLF: robot configuration as a list of 3 ints: [REAR, LOWER-ARM, FLIP]. [0,0,0] means [front, upper arm and non-flip] configuration
         :type conf_RLF: int list
         """
-        self.MoveBase(pose, joints, MoveInterpolation.LINEAR)
+        self.MoveBase(pose, joints, MoveInterpolation.LINEAR, **kwargs)
 
     def MoveC(self, pose1, joints1, pose2, joints2, conf_RLF_1=None, conf_RLF_2=None):
         """Defines a circular movement.

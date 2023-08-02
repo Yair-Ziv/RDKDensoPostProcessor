@@ -58,4 +58,4 @@ _fig_calculator = FigCalculator.from_parameters(_DENSO_MHD)
 
 
 def get_fig(joints):
-    return _fig_calculator.calc_fig(joints)
+    return _fig_calculator.calc_fig(np.deg2rad(joints))

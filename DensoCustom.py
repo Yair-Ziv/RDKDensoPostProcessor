@@ -64,7 +64,7 @@ class RobotPost(object):
     LOG = ''
     nAxes = 6
 
-    def __init__(self, robotpost=None, robotname=None, robot_axes=6):
+    def __init__(self, robotpost=None, robotname=None, robot_axes=6, **kwargs):
         """Create a new post processor.
 
         :param robotpost: name of the post processor

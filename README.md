@@ -24,7 +24,7 @@ To use the post processor, follow these steps:
 git clone https://github.com/your-username/robodk-post-processor.git
 ```
 
-2. Paste the .py files to the RoboDK posts directory:
+2. Paste DensoCustom.py and the DensoCustomUtils directory to the RoboDK posts directory:
   * Unix: ~/RoboDK/Posts/
   * Windows: C:/RoboDK/Posts
 

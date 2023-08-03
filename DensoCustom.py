@@ -162,7 +162,7 @@ class RobotPost(object):
     def MoveBase(self, pose, joints, interpolation: MoveInterpolation):
         fig = get_fig(joints)
         self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
-                                      Pose(np.array(list(pose)), fig), joints, interpolation))
+                                      Pose(np.array(pose.Rows()), fig), joints, interpolation))
 
     def MoveJ(self, pose, joints=None, conf_RLF=None):
         """Defines a joint movement.
@@ -228,7 +228,7 @@ class RobotPost(object):
         :param frame_name: Name of the reference frame as defined in RoboDK
         :type frame_name: str
         """
-        self.system_state_holder.set_frame(frame_name, pose)
+        self.system_state_holder.set_frame(frame_name, pose.Rows())
 
     def setTool(self, pose, tool_id=None, tool_name=None):
         """Change the robot TCP (Tool Center Point) with respect to the robot flange. Any movement defined in Cartesian coordinates assumes that it is using the last reference frame and tool frame provided.
@@ -243,7 +243,7 @@ class RobotPost(object):
         :param tool_name: Name of the reference frame as defined in RoboDK
         :type tool_name: str
         """
-        self.system_state_holder.set_tool(tool_name, pose)
+        self.system_state_holder.set_tool(tool_name, pose.Rows())
 
     def Pause(self, time_ms):
         """Defines a pause in a program (including movements). time_ms is negative if the pause must provoke the robot to stop until the user desires to continue the program.

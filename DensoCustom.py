@@ -194,12 +194,15 @@ class RobotPost(object):
     def get_cur_pose_name(self):
         target_name = None
         if hasattr(self, '_TargetName'):
-            raw_target_name = self._TargetName
-            if type(raw_target_name) is list:
-                raise Exception('Target name was a list', ','.join(raw_target_name))
-            target_name = self._TargetName
-        else:
-            raise Exception("Got a pose with no name")
+        # Check if the setting was enabled in robodk
+            if self._TargetName is None:
+                pass # This means the target has no name
+            else:
+                if type(self._TargetName) is list:
+                    target_name = self._TargetName[position].replace(' ','_')
+                else:
+                    target_name = self._TargetName.replace(' ','_')
+        return target_name
 
 
     def MoveC(self, pose1, joints1, pose2, joints2, conf_RLF_1=None, conf_RLF_2=None):

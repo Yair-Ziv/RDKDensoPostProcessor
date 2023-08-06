@@ -94,7 +94,7 @@ class RobotPost(object):
         self.addline('PROC %s()' % progname)
 
     def parse_motions(self):
-        return {pose.pose_name: pose.to_dict() for pose in self.poses}
+        return [pose.to_dict() for pose in self.poses]
 
     def parse_output(self):
         return {'Frames': self.system_state_holder.frames,
@@ -199,9 +199,9 @@ class RobotPost(object):
                 pass # This means the target has no name
             else:
                 if type(self._TargetName) is list:
-                    target_name = self._TargetName[position].replace(' ','_')
+                    pass
                 else:
-                    target_name = self._TargetName.replace(' ','_')
+                    target_name = self._TargetName.replace(' ', '_')
         return target_name
 
 

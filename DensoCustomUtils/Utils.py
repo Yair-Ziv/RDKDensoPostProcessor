@@ -27,7 +27,7 @@ class RobotMotion:
         self.move_interpolation = move_interpolation
 
     def to_dict(self):
-        return {'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.to_dict()}
+        return {'PoseName': self.pose_name, 'Frame': self.frame, 'Tool': self.tool, 'Pose': self.pose.to_dict()}
 
 
 class SystemStateHolder:

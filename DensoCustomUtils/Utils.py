@@ -18,7 +18,8 @@ class Pose:
 
 
 class RobotMotion:
-    def __init__(self, frame, tool, pose, joints, move_interpolation=MoveInterpolation.NONE):
+    def __init__(self, pose_name, frame, tool, pose, joints, move_interpolation=MoveInterpolation.NONE):
+        self.pose_name = pose_name
         self.frame = frame
         self.tool = tool
         self.pose = pose

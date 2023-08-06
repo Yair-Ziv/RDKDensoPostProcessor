@@ -94,10 +94,7 @@ class RobotPost(object):
         self.addline('PROC %s()' % progname)
 
     def parse_motions(self):
-        motions = []
-        for motion in self.poses:
-            motions.append(motion.to_dict())
-        return motions
+        return {pose.pose_name: pose.to_dict() for pose in self.poses}
 
     def parse_output(self):
         return {'Frames': self.system_state_holder.frames,
@@ -159,9 +156,9 @@ class RobotPost(object):
         """
         UploadFTP(self.PROG_FILES, robot_ip, remote_path, ftp_user, ftp_pass)
 
-    def MoveBase(self, pose, joints, interpolation: MoveInterpolation):
+    def MoveBase(self, pose_name, pose, joints, interpolation: MoveInterpolation):
         fig = get_fig(joints)
-        self.poses.append(RobotMotion(self.system_state_holder.active_frame, self.system_state_holder.active_tool,
+        self.poses.append(RobotMotion(pose_name, self.system_state_holder.active_frame, self.system_state_holder.active_tool,
                                       Pose(np.array(pose.Rows()), fig), joints, interpolation))
 
     def MoveJ(self, pose, joints=None, conf_RLF=None):
@@ -177,7 +174,7 @@ class RobotPost(object):
         :param conf_RLF: robot configuration as a list of 3 ints: [REAR, LOWER-ARM, FLIP]. [0,0,0] means [front, upper arm and non-flip] configuration
         :type conf_RLF: int list
         """
-        self.MoveBase(pose, joints, MoveInterpolation.JOINT)
+        self.MoveBase(self.get_cur_pose_name(), pose, joints, MoveInterpolation.JOINT)
 
     def MoveL(self, pose, joints=None, conf_RLF=None):
         """Defines a linear movement.
@@ -192,7 +189,18 @@ class RobotPost(object):
         :param conf_RLF: robot configuration as a list of 3 ints: [REAR, LOWER-ARM, FLIP]. [0,0,0] means [front, upper arm and non-flip] configuration
         :type conf_RLF: int list
         """
-        self.MoveBase(pose, joints, MoveInterpolation.LINEAR)
+        self.MoveBase(self.get_cur_pose_name(), pose, joints, MoveInterpolation.LINEAR)
+
+    def get_cur_pose_name(self):
+        target_name = None
+        if hasattr(self, '_TargetName'):
+            raw_target_name = self._TargetName
+            if type(raw_target_name) is list:
+                raise Exception('Target name was a list', ','.join(raw_target_name))
+            target_name = self._TargetName
+        else:
+            raise Exception("Got a pose with no name")
+
 
     def MoveC(self, pose1, joints1, pose2, joints2, conf_RLF_1=None, conf_RLF_2=None):
         """Defines a circular movement.
